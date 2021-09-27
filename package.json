@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "svelte-kit dev",
+    "build": "svelte-kit build --verbose",
+    "preview": "svelte-kit preview"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-vercel": "next",
+    "@sveltejs/kit": "next",
+    "svelte": "^3.43.0",
+    "vercel": "^23.1.2"
+  },
+  "dependencies": {
+    "prettier": "^2.4.1",
+    "prettier-plugin-svelte": "^2.4.0"
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "none"
+  }
+}
