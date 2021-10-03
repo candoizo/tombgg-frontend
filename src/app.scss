@@ -1,0 +1,8 @@
+@import 'node_modules/tailwindcss/dist/base';
+@import 'node_modules/tailwindcss/dist/components';
+@import 'node_modules/tailwindcss/dist/utilities';
+
+body {
+  @apply mx-2;
+  @apply bg-red-400;
+}

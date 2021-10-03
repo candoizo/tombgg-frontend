@@ -5,7 +5,7 @@
     <link rel="icon" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="follow, index" />
-    <title>SpaceX Launches | SvelteKit and Vercel</title>
+    <title>fren.fi</title>
     <meta
       content="SvelteKit app fetching data from the SpaceX GraphQL API, deployed to Vercel."
       name="description"
@@ -28,7 +28,18 @@
     <meta name="twitter:image" content="/twitter.png" />
     %svelte.head%
   </head>
-  <body>
+  <body class="text-white">
     <div id="svelte">%svelte.body%</div>
   </body>
 </html>
+
+<style lang="scss">
+  :global(body) {
+    background: rgb(37, 18, 77);
+    max-width: 650px;
+    margin: auto;
+    padding: 0 16px;
+    color: white;
+    overflow-y: hidden;
+  }
+</style>
