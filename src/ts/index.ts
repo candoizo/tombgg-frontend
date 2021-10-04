@@ -4,7 +4,8 @@ import { getDefaultProvider, Contract } from 'ethers';
 import { IERC20__factory } from '@aavegotchi/sdk';
 
 import { approve } from './tx';
-export { approve };
+import { stake, unstake, ticketchef } from './ticketchef';
+export { approve, stake, unstake, ticketchef };
 
 export const rpcUrl = 'http://localhost:8545';
 export const provider = getDefaultProvider(rpcUrl);
@@ -29,7 +30,7 @@ export const contracts = {
   )
 };
 
-export async function getProps(): Promise<any> {
+export async function getProps(): Promise<unknown> {
   const props = { ...contracts };
 
   return {
