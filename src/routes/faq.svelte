@@ -40,6 +40,10 @@
   }
 </script>
 
+<template lang="pug" src="src/components/Header.pug">
+
+</template>
+
 <div class="mt-6">
   <div class="text-pink-400 text-4xl text-center font-semibold">
     TicketDAO Prices

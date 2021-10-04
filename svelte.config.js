@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import vercel from '@sveltejs/adapter-vercel';
 import preprocess from 'svelte-preprocess';
 

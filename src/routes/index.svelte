@@ -1,49 +1,18 @@
 <!-- onload -->
 <script context="module" lang="ts">
   import '../app.scss';
-  import { aggregate } from '@makerdao/multicall';
-  import {
-    getDefaultProvider,
-    BigNumber,
-    utils,
-    Contract,
-    providers
-  } from 'ethers';
-  import { getProps, provider, contracts, mcConfig } from '../ts';
-  export async function load({ fetch }) {
-    const prices = [];
-    for (let i = 0; i <= 6; i++) {
-      const callInfo = {
-        returns: [
-          [
-            'ticket_cost_' + i,
-            (val: BigNumber) => parseFloat(utils.formatEther(val))
-          ]
-        ],
-        target: '0xA02d547512Bb90002807499F05495Fe9C4C3943f',
-        call: ['ticketCost(uint256)(uint256)', i]
-      };
-      prices.push(callInfo);
-    }
-    const multires = await aggregate(prices, mcConfig);
-    const ticketPrices = Object.fromEntries(
-      Object.keys(multires.results.transformed).map((key, index) => {
-        const frenCost = multires.results.transformed[key];
-        console.log(key, frenCost, frenCost * (1.5 / 1000));
-        const ghstPerThousandFrens = 1.5;
-        const ghstPriceFrenRate = frenCost * (ghstPerThousandFrens / 1000);
-        return [index, ghstPriceFrenRate];
-      })
-    );
-    console.log(`ticketPrices: `, ticketPrices);
-
+  import { BigNumber, utils, Contract, providers } from 'ethers';
+  import { getProps, contracts, approve, ticketCosts } from '../ts';
+  export async function load() {
+    const ghstPerThousandFrens = 1.5;
+    const tickets = await ticketCosts(ghstPerThousandFrens);
     const pro = await getProps();
     console.log(pro);
     return {
       status: 200,
       props: {
         userStake: BigNumber.from(0),
-        ticketPrices: ticketPrices,
+        ticketPrices: tickets,
         ...pro
       }
     };
@@ -58,7 +27,6 @@
   export let userAccount;
   export let userBalance;
   export let userStake;
-  export let ghst;
   export let contractAddress;
   export let ticketPrices;
   export let totalCost;
@@ -72,7 +40,7 @@
   const toggle = (test: string) => (user.active = test);
 
   export let pendingTx;
-  async function buyTickets(est) {
+  async function buyTickets() {
     console.log('Buying tickets! zomg', ticketPrices, ticketAmounts);
     const tx = await ticketchef.swapStakeForTickets(
       Object.keys(ticketAmounts),
@@ -82,19 +50,6 @@
     pendingTx = tx.hash;
     const conf = await tx.wait();
     console.log(`Approve conf: `, conf);
-
-    // check approval to spend ghst
-    // const ticketchef = new Contract("0x...", "", )
-    // await ticketchef.swapGhstForTicket(0, 0);
-    // const ticketTypes =
-    // const arg1 = Object.keys(ticketAmounts).map(key => {
-    //   const amount = ticketAmounts[key];
-    //   if (amount > 0) {
-    //
-    //   }
-    // })
-
-    // ticketChef.swapGhstForTicket(ticketAmounts, ticketPrices);
   }
 
   function updateTotal() {
@@ -110,6 +65,7 @@
   async function connectWallet() {
     console.log(`zomg connect wallet plz`);
     const provider = await detectEthereumProvider();
+    console.warn(`CURRENT NETWORK: `, Number(provider.chainId));
     const enabledAccounts = await provider.enable();
     accountSigner = new providers.Web3Provider(provider).getSigner();
     contractAddress = '0x6c383Ef7C9Bf496b5c847530eb9c49a3ED6E4C56';
@@ -131,24 +87,22 @@
 
       // check if ghst is approved
       if (!contractAddress) contractAddress = firstAccount;
-      const approve = await ghst.allowance(firstAccount, contractAddress);
+      const approve = await contracts.ghst.allowance(
+        firstAccount,
+        contractAddress
+      );
       console.log(
         `Account is approved to spend ghst?`,
         approve
         // providers.getSigner(firstAccount)
       );
       user.approveGhstContract = approve.gt(0);
-
-      // const userBalanceCheck = await ghst.balanceOf(
-      //   '0x40863E9462449C8FF022881eC205906C38e6edc1'
-      // );
-      // userBalance = parseFloat(utils.formatEther(userBalanceCheck)).toFixed(2);
       updateBalances();
     }
   }
 
   async function updateBalances() {
-    const balance = await ghst.balanceOf(userAccount);
+    const balance = await contracts.ghst.balanceOf(userAccount);
     userBalance = utils.formatEther(balance);
     const stakeBalance = await ticketchef.balanceOf(userAccount);
     userStake = utils.formatEther(stakeBalance);
@@ -171,7 +125,7 @@
   async function stake(value?: string) {
     console.log(`zomg stake: `, value, stakeAmount);
     if (value === 'max') {
-      const max = await ghst.balanceOf(userAccount);
+      const max = await contracts.ghst.balanceOf(userAccount);
       stakeAmount = utils.formatEther(max);
     }
     if (stakeAmount > 0) {
@@ -214,10 +168,7 @@
 </script>
 
 <div class="mt-6 flex justify-between w-4/5 mx-auto bg-purple-800 rounded p-2">
-  <a href="/" class="text-4xl text-left font-semibold">
-    <div class="text-pink-400">FRENBank</div>
-    <div class="text-xs">Autocompounding GHST / ticket market!</div>
-  </a>
+  <template src="../components/Header.pug" />
   <div
     class="bg-indigo-400 hover:bg-indigo-300 rounded p-1 px-4 h-12 m-auto ml-auto mr-0 flex cursor-pointer w-36 md:w-48 justify-center"
     on:click={() => connectWallet()}
@@ -263,24 +214,26 @@
 
 <div class="flex flex justify-center h-42 font-bold text-lg md:text-xl">
   <div class="my-auto mx-2">
-    <a
+    <div
       class="flex mx-auto my-2 text-white bg-pink-500 hover:bg-pink-400 border-0 py-2 px-8 focus:outline-none  rounded text-center cursor-pointer"
       on:click={() => toggle('stake')}
-      ><div class="mx-auto w-full">
+    >
+      <div class="mx-auto w-full">
         🚜 Stake GHST
         <div class="text-xs">exchange xGHST</div>
-      </div></a
-    >
+      </div>
+    </div>
   </div>
   <div class="my-auto mx-2">
-    <a
+    <div
       class="flex mx-auto my-2 text-white bg-green-600 hover:bg-green-500 border-0 py-2 px-8 focus:outline-none rounded text-center cursor-pointer"
       on:click={() => toggle('tickets')}
-      ><div class="mx-auto ">
+    >
+      <div class="mx-auto ">
         🎫 Buy Tickets
         <div class="text-xs">over the counter</div>
-      </div></a
-    >
+      </div>
+    </div>
   </div>
 </div>
 <div class="w-4/5 mx-auto mt-4">
@@ -376,20 +329,22 @@
       </div>
     </div>
 
-    <div
-      class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mt-4 flex"
-      role="alert"
-    >
-      <a href={`https://polygonscan/tx/${pendingTx}`}>
-        <strong class="font-bold">Transaction Pending!</strong>
-        <span class="block sm:inline">View on polygonscan ⤴️</span>
-      </a>
+    {#if pendingTx}
       <div
-        class="inline-flex text-xs my-auto ml-auto text-right ml-auto cursor-pointer"
+        class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mt-4 flex"
+        role="alert"
       >
-        Dismiss
+        <a href={`https://polygonscan/tx/${pendingTx}`}>
+          <strong class="font-bold">Transaction Pending!</strong>
+          <span class="block sm:inline">View on polygonscan ⤴️</span>
+        </a>
+        <div
+          class="inline-flex text-xs my-auto ml-auto text-right ml-auto cursor-pointer"
+        >
+          Dismiss
+        </div>
       </div>
-    </div>
+    {/if}
   {/if}
   {#if user.active === 'migrate'}
     <div class="">Migrate stkGHST</div>

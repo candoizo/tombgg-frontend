@@ -1,10 +1,6 @@
-import {
-  getDefaultProvider,
-  BigNumber,
-  utils,
-  Contract,
-  providers
-} from 'ethers';
+import { aggregate } from '@makerdao/multicall';
+import { BigNumber, utils } from 'ethers';
+import { getDefaultProvider, Contract } from 'ethers';
 import { IERC20__factory } from '@aavegotchi/sdk';
 
 import { approve } from './tx';
@@ -40,4 +36,31 @@ export async function getProps(): Promise<any> {
     status: 200,
     props
   };
+}
+
+export async function ticketCosts(ghstPerThousandFrens: number) {
+  const prices = Array(6)
+    .fill(undefined)
+    .map((_, index) => {
+      console.log(index);
+      return {
+        returns: [
+          [
+            'ticket_cost_' + index,
+            (val: BigNumber) => parseFloat(utils.formatEther(val))
+          ]
+        ],
+        target: contracts.staking.address,
+        call: ['ticketCost(uint256)(uint256)', index]
+      };
+    });
+  const multires = await aggregate(prices, mcConfig);
+  return Object.fromEntries(
+    Object.keys(multires.results.transformed).map((key, index) => {
+      const frenCost = multires.results.transformed[key];
+      console.log(key, frenCost, frenCost * (1.5 / 1000));
+      const ghstPriceFrenRate = frenCost * (ghstPerThousandFrens / 1000);
+      return [index, ghstPriceFrenRate];
+    })
+  );
 }

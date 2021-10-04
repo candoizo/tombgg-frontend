@@ -1,6 +1,6 @@
-import { utils } from 'ethers';
-import { provider, contracts } from './index';
-export async function approve(signer) {
+import { utils, providers } from 'ethers';
+import { contracts } from './index';
+export async function approve(signer: providers.JsonRpcProvider) {
   console.log(`zomg approve ghst:`, signer);
   const tx = await contracts.ghst
     .connect(signer)

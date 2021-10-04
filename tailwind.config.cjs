@@ -1,11 +1,14 @@
+/* eslint-env node */
+// const tailwindcssforms = require('@tailwindcss/forms');
 module.exports = {
-  purge: [],
+  mode: 'jit',
+  purge: ['./src/**/*.{html, svelte}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {}
   },
   variants: {
     extend: {}
-  },
-  plugins: [require('@tailwindcss/forms')]
+  }
+  // plugins: [tailwindcssforms]
 };
