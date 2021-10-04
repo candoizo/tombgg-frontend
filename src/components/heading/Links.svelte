@@ -15,7 +15,7 @@
   {#each linkInfo as info}
     <a
       href={info.href}
-      class="bg-{info.color}-500 hover:bg-{info.color}-400 rounded p-2 w-28 text-sm flex"
+      class="bg-{info.color}-500 hover:bg-{info.color}-700 rounded p-2 w-28 text-sm flex"
     >
       <div class="mx-auto">{info.text}</div>
     </a>

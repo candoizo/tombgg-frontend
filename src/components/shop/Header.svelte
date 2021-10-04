@@ -1,6 +1,6 @@
 <script lang="ts">
   export let buyTickets;
-  export let userBalance;
+  export let address;
   export let totalCost;
 </script>
 
@@ -11,9 +11,9 @@
     <div class="">Buy from the bank with GHST!</div>
     <div class="flex">
       <div class="my-auto text-sm">
-        User Balance: {userBalance || 'not connected'}
+        User Balance: {address || 'not connected'}
       </div>
-      {#if userBalance}
+      {#if address}
         <img
           src="/ghst.gif"
           width="28px"
