@@ -6,8 +6,8 @@
       color: 'indigo',
       text: 'Contract'
     },
-    { href: '/faq', color: 'blue', text: 'GitHub' },
-    { href: '/faq', color: 'yellow', text: 'Vote' }
+    { href: '/faq', color: 'blue', text: 'GitHub' }
+    // { href: '/faq', color: 'yellow', text: 'Vote' }
   ];
 </script>
 

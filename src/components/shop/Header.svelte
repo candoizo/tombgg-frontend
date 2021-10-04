@@ -2,26 +2,29 @@
   export let buyTickets;
   export let address;
   export let totalCost;
+
+  import { contracts } from '../../ts';
+  import { utils } from 'ethers';
 </script>
 
 <div class="flex justify-between">
   <div class="my-auto">
-    <div class="text-2xl font-semibold md:hidden">🎫 Buy</div>
-    <div class="text-3xl font-semibold hidden md:flex">🎫 Buy Tickets</div>
-    <div class="">Buy from the bank with GHST!</div>
+    <div class="">RATE: 1.5 GHST per 1000 FRENS</div>
     <div class="flex">
       <div class="my-auto text-sm">
-        User Balance: {address || 'not connected'}
+        BALANCE:
+        {#if !address}
+          not connected
+        {:else}
+          {#await contracts.ghst.balanceOf(address)}
+            loading...
+          {:then balance}
+            {parseFloat(utils.formatEther(balance)).toFixed(2)} GHST
+          {:catch balance}
+            fail
+          {/await}
+        {/if}
       </div>
-      {#if address}
-        <img
-          src="/ghst.gif"
-          width="28px"
-          height="28px"
-          class="image-pixelated inline"
-          alt="a spinning GHST icon"
-        />
-      {/if}
     </div>
   </div>
   <div class="my-auto flex">
