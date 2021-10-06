@@ -5,16 +5,20 @@
   export let connect;
   export let address;
   export let signer;
+  export let allowance;
 </script>
 
-<div class="mt-6 flex justify-between w-4/5 mx-auto bg-gray-900 rounded p-2">
-  <template lang="pug">
+<div
+  class="mt-6 flex flex-col justify-between w-4/5 mx-auto bg-gray-900 rounded py-2 px-4"
+>
+  <div class="flex">
+    <template lang="pug">
 a.text-4xl.text-left.font-semibold(href='/')
   .text-white ticket.shop
   .text-xs Autocompounding GHST / ticket market!
-  </template>
+    </template>
 
-  <ConnectWallet {connect} bind:address bind:signer />
+    <ConnectWallet {connect} bind:address bind:signer bind:allowance />
+  </div>
+  <Links />
 </div>
-
-<Links />

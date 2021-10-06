@@ -38,6 +38,7 @@
   export let ticketchef;
   export let ticketPrices;
   export let pendingTx;
+  export let allowance = 0;
   export let ticketAmounts = Object.fromEntries(
     Object.keys(ticketPrices).map((key) => [key, 0])
   );
@@ -74,64 +75,6 @@
     userStake = utils.formatEther(stakeBalance);
   }
 
-  async function userApprove() {
-    console.log(`zomg approve ghst:`, signer);
-
-    const tx = await approve(signer);
-    pendingTx = tx.hash;
-
-    const conf = await tx.wait();
-    console.log(`Approve conf: `, conf);
-    if (conf) {
-      user.approveGhstContract = true;
-      updateBalances();
-    }
-  }
-
-  async function stake(value?: string) {
-    console.log(`zomg stake: `, value, stakeAmount);
-    if (value === 'max') {
-      const max = await contracts.ghst.balanceOf(userAccount);
-      stakeAmount = utils.formatEther(max);
-    }
-    if (stakeAmount > 0) {
-      const testStake = utils.parseEther(stakeAmount.toString());
-      console.log(testStake);
-      const tx = await ticketchef.enter(testStake);
-      console.log(`Stake tx: `, tx);
-      pendingTx = tx.hash;
-      const conf = await tx.wait();
-      console.log(`Stake conf: `, conf);
-      if (conf) {
-        // reload balances
-        updateBalances();
-        stakeAmount = '';
-      }
-    }
-  }
-
-  async function unstake(value?: string) {
-    console.log(`zomg unstake: `, value, stakeAmount);
-    if (value === 'max') {
-      const max = await ticketchef.balanceOf(userAccount);
-      stakeAmount = utils.formatEther(max);
-    }
-    if (stakeAmount > 0) {
-      const testStake = utils.parseEther(stakeAmount.toString());
-      console.log(testStake);
-      const tx = await ticketchef.leave(testStake);
-      console.log(`Unstake tx: `, tx);
-      pendingTx = tx.hash;
-      const conf = await tx.wait();
-      console.log(`Unstake conf: `, conf);
-      if (conf) {
-        // reload balances
-        updateBalances();
-        stakeAmount = '';
-      }
-    }
-  }
-
   let view = 'stake';
 
   let signer;
@@ -139,19 +82,17 @@
   let address;
 </script>
 
-<Header bind:address bind:signer />
+<Header bind:address bind:signer bind:allowance />
 
 <Navbar bind:view />
 
 <div class="w-4/5 mx-auto mt-4">
   {#if view === 'stake'}
     <StakeDash />
-
-    <Stake bind:signer />
-
+    <Stake bind:signer bind:pendingTx bind:allowance />
     <Alert hash={pendingTx} />
   {:else if view === 'tickets'}
-    <div class="bg-gray-900 rounded-lg p-4">
+    <div class="bg-gray-800 rounded-lg p-4">
       <TicketHeader {buyTickets} {address} {totalCost} />
       <TicketFields
         {ticketPrices}

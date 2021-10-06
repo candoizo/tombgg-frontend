@@ -27,7 +27,8 @@ export const contracts = {
       'function ticketCost(uint256 _id) public pure returns (uint256 _frensCost)'
     ],
     provider
-  )
+  ),
+  chef: ticketchef(provider)
 };
 
 export async function getProps(): Promise<unknown> {

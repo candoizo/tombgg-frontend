@@ -1,18 +1,11 @@
 import { BigNumberish, Contract, providers } from 'ethers';
 import { contracts } from './index';
 
+import { abi } from './ticketchef.json';
+
 export const ticketchef = (signer) => {
-  const contractAddress = '0x6c383Ef7C9Bf496b5c847530eb9c49a3ED6E4C56';
-  return new Contract(
-    contractAddress,
-    [
-      'function enter(uint256 _amount)',
-      'function leave(uint256 _amount)',
-      'function swapStakeForTickets(uint256[] calldata _ticketTypes,uint256[] calldata _ticketValues)',
-      'function balanceOf(address _owner) external view returns (uint256 balance_)'
-    ],
-    signer
-  );
+  const contractAddress = '0x8AFB0C54bAE39A5e56b984DF1C4b5702b2abf205';
+  return new Contract(contractAddress, abi, signer);
 };
 
 async function stake(signer: providers.JsonRpcSigner, value?: BigNumberish) {

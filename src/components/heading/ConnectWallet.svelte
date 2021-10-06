@@ -1,10 +1,12 @@
 <script lang="ts">
-  import { providers } from 'ethers';
+  import { providers, utils } from 'ethers';
+  import { contracts } from '../../ts';
   export let address;
   export let signer;
+  export let allowance;
 
   import detectEthereumProvider from '@metamask/detect-provider';
-  async function connect() {
+  const connect = async () => {
     console.log(`zomg connect wallet plz`);
     const provider = await detectEthereumProvider();
     const enabledAccounts = await provider.enable();
@@ -12,7 +14,15 @@
     signer = new providers.Web3Provider(provider).getSigner();
     formatAddress = address.slice(0, 4) + '...' + address.slice(-4);
     console.warn(`CURRENT NETWORK: `, Number(provider.chainId), address);
-  }
+
+    allowance = parseFloat(
+      utils.formatEther(
+        await contracts.ghst.allowance(address, contracts.chef.address)
+      )
+    );
+
+    console.log(`user ghst allowance for chef:`, allowance);
+  };
 
   let formatAddress;
 </script>

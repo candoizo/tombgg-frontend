@@ -7,7 +7,7 @@
   import { utils } from 'ethers';
 </script>
 
-<div class="flex justify-between">
+<div class="flex justify-between bg-purple-800 rounded-lg px-4 py-1 mb-4">
   <div class="my-auto">
     <div class="">RATE: 1.5 GHST per 1000 FRENS</div>
     <div class="flex">
