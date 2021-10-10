@@ -1,20 +1,3 @@
-<script context="module" lang="ts">
-  import { getProps, ticketCosts } from '../../ts';
-  export async function load() {
-    const ghstPerThousandFrens = 1.5;
-    console.log(`kilofrens rate: ${await contracts().chef.KILOFRENS_RATE()}`);
-    const tickets = await ticketCosts(ghstPerThousandFrens);
-    console.log(`tickets:`, tickets);
-    return {
-      status: 200,
-      props: {
-        ticketPrices: tickets,
-        ...(await getProps())
-      }
-    };
-  }
-</script>
-
 <script lang="ts">
   export let pendingTx;
   export let signer;
@@ -26,29 +9,33 @@
   import { contracts } from '../../ts';
 
   export let buyTickets = async () => {
+    console.log('buyTickets entry', ticketbook, ticketAmounts);
     const { chef } = contracts();
-    console.log('Buying tickets! zomg', ticketbook, ticketAmounts);
-    if (signer === undefined) {
-      console.log(`No signer to buyTickets`, signer);
-      return;
-    }
-    const tx = await chef
-      .connect(signer)
-      .swapGhstForTickets(
-        Object.keys(ticketAmounts),
-        Object.values(ticketAmounts)
+    try {
+      const tx = await chef
+        .connect(signer)
+        .swapGhstForTickets(
+          Object.keys(ticketAmounts),
+          Object.values(ticketAmounts)
+        );
+      console.log(`buyTickets tx: `, tx);
+      pendingTx = tx.hash;
+      ticketAmounts = Object.fromEntries(
+        Object.keys(ticketAmounts).map((key) => [key, 0])
       );
-    console.log(`buyTickets tx: `, tx);
-    pendingTx = tx.hash;
-    const conf = await tx.wait();
-    console.log(`buyTickets conf: `, conf);
-    updateBalances();
-    pendingTx = '';
+      totalCost = 0;
+      const conf = await tx.wait();
+      console.log(`buyTickets conf: `, conf);
+      updateBalances();
+      pendingTx = '';
+    } catch (err) {
+      console.log(`buyTickets err: `, err);
+    }
   };
 
   export let totalCost = 0;
   function updateTotal() {
-    console.log(`zomg changed buy field plz`, ticketbook, ticketAmounts);
+    console.log(`updateTotal entry`, ticketbook, ticketAmounts);
     let total = 0;
     Object.keys(ticketbook).map((key) => {
       console.log((ticketbook[key] * ticketAmounts[key]).toFixed(3));

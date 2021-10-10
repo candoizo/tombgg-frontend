@@ -43,6 +43,9 @@
     chef: {
       allowance: 0,
       balance: 0
+    },
+    staking: {
+      tickets: Array(6).fill(0)
     }
   };
   let updateBalances;
@@ -60,7 +63,7 @@
     <ShopDash />
     <div class="bg-gray-800 rounded-lg p-4 shadow-xl">
       <div class="bg-gray-900 rounded-lg shadow-xl">
-        <TicketHeader {buyTickets} {address} {totalCost} {signer} />
+        <TicketHeader {buyTickets} {address} {totalCost} {signer} {balances} />
         <TicketFields
           {ticketbook}
           {signer}

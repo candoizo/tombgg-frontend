@@ -46,7 +46,7 @@
 
     balances = { ghst: ghstInfo, chef: chefInfo, staking: stakingInfo };
 
-    console.log(`user ghst allowance for chef:`, balances, await chef.profit());
+    console.log(`user ghst allowance for chef:`, balances);
   };
 
   let formatAddress;

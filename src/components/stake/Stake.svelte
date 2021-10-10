@@ -3,6 +3,7 @@
   import { parseEther, formatEther } from '@ethersproject/units';
   import numeral from 'numeral';
   import { contracts } from '../../ts';
+  import { info } from './store';
   import Info from '../Info.svelte';
   export let signer;
   export let pendingTx;
@@ -162,11 +163,7 @@
   {#if signer}
     <div class="flex justify-around mx-2 mt-4">
       <Info title="🏦 Your Deposit">
-        {#await contracts().chef.balanceOf(signer.getAddress())}
-          Loading...
-        {:then bal}
-          {numeral(formatEther(bal)).format('0.0a')} GHST
-        {/await}
+        {numeral(balances.chef.balance * $info.exchangeRate).format('0.00a')} GHST
       </Info>
       <Info title="🏦 Your Earnings">hi</Info>
     </div>

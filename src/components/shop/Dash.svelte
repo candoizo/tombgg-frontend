@@ -20,7 +20,7 @@
   <div class="flex justify-around">
     <Info title="👻 FRENS In Bank">
       {#if $info.price > 0}
-        {numeral($info.frens).format('0,000.00')}
+        {numeral($info.frens).format('0,000')} FRENS
       {:else}
         Loading
       {/if}
