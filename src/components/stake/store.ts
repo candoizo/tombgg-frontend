@@ -28,10 +28,18 @@ const updateBalances = async (set?) => {
       call: ['exchangeRate()(uint256)']
     },
     {
+      returns: [
+        ['kilofrensRate', (val: BigNumber) => parseFloat(formatEther(val))]
+      ],
+      target: chef.address,
+      call: ['KILOFRENS_RATE()(uint256)']
+    },
+    {
       returns: [['frens', (val: BigNumber) => parseFloat(formatEther(val))]],
       target: staking.address,
       call: ['frens(address)(uint256)', chef.address]
     }
+
     // {
     //   returns: [
     //     ['balanceOf', (val: BigNumber) => parseFloat(formatEther(val))]

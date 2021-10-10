@@ -3,7 +3,7 @@
   import { parseEther, formatEther } from '@ethersproject/units';
   import numeral from 'numeral';
   import { contracts } from '../../ts';
-  import Info from './Info.svelte';
+  import Info from '../Info.svelte';
   export let signer;
   export let pendingTx;
   export let depositAmount;
@@ -98,10 +98,10 @@
     </div>
     {#if !signer}
       <div
-        class="bg-gray-600 hover:bg-gray-800 rounded p-2 w-28 text-md flex my-8 mx-auto w-2/5"
+        class="text-xl rounded flex my-8 mx-auto w-full"
         on:click={() => approve()}
       >
-        <div class="mx-auto animate-pulse">Connect a wallet</div>
+        <div class="mx-auto">You must connect a wallet.</div>
       </div>
     {:else}
       <div class="flex w-full justify-around mt-4">
@@ -159,8 +159,16 @@
       </div>
     {/if}
   </div>
-  <div class="flex justify-around mx-2 mt-4">
-    <Info title="🏦 Your Deposit">hi</Info>
-    <Info title="🏦 Your Earnings">hi</Info>
-  </div>
+  {#if signer}
+    <div class="flex justify-around mx-2 mt-4">
+      <Info title="🏦 Your Deposit">
+        {#await contracts().chef.balanceOf(signer.getAddress())}
+          Loading...
+        {:then bal}
+          {numeral(formatEther(bal)).format('0.0a')} GHST
+        {/await}
+      </Info>
+      <Info title="🏦 Your Earnings">hi</Info>
+    </div>
+  {/if}
 </div>

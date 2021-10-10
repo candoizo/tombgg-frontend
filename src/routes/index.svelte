@@ -24,6 +24,7 @@
   import Stake from '../components/stake/Stake.svelte';
 
   // ticket page
+  import ShopDash from '../components/shop/Dash.svelte';
   import TicketHeader from '../components/shop/Header.svelte';
   import TicketFields from '../components/shop/TicketFields.svelte';
 
@@ -47,15 +48,16 @@
   let updateBalances;
 </script>
 
-<Header bind:address bind:signer bind:balances bind:updateBalances />
+<Header bind:address bind:signer bind:balances bind:updateBalances bind:view />
 
-<Navbar bind:view />
+<!-- <Navbar bind:view /> -->
 
-<div class="w-4/5 mx-auto mt-4">
+<div class="px-2 w-full md:w-4/5 lg:w-3/5 xl:w-2/5 mx-auto mt-4">
   {#if view === 'stake'}
     <StakeDash />
     <Stake {signer} bind:pendingTx bind:balances {updateBalances} />
   {:else if view === 'tickets'}
+    <ShopDash />
     <div class="bg-gray-800 rounded-lg p-4 shadow-xl">
       <div class="bg-gray-900 rounded-lg shadow-xl">
         <TicketHeader {buyTickets} {address} {totalCost} {signer} />

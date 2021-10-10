@@ -1,6 +1,6 @@
 <script lang="ts">
   import numeral from 'numeral';
-  import { info } from './store';
+  import { info } from '../stake/store';
   import Info from '../Info.svelte';
 
   let rateText = '1xGHST = 1.25GHST';
@@ -18,25 +18,15 @@
   class="bg-gray-800 rounded-lg flex flex-col py-4 justify-around mb-4 select-none shadow-xl"
 >
   <div class="flex justify-around">
-    <Info title="🏦 Total Deposits">
+    <Info title="👻 FRENS In Bank">
       {#if $info.price > 0}
-        {numeral($info.price * ($info.totalSupply * $info.exchangeRate)).format(
-          '$0.00a'
-        )} | {numeral($info.totalSupply * $info.exchangeRate).format('0.00a')}
-        GHST
+        {numeral($info.frens).format('0,000.00')}
       {:else}
         Loading
       {/if}
     </Info>
-    <Info title="💰 Total Earnings">
-      {#if $info.price > 0}
-        {numeral($info.profit * $info.price).format('$0.00a')} | {numeral(
-          $info.profit
-        ).format('0.00a')}
-        GHST
-      {:else}
-        Loading
-      {/if}
-    </Info>
+    <Info title="💰 GHST/FRENS Rate"
+      >{numeral($info.kilofrensRate).format('0.00[0]a')} GHST = 1K FRENS</Info
+    >
   </div>
 </div>

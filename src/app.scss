@@ -1,4 +1,14 @@
 body {
-  @apply mx-2;
-  @apply bg-red-400;
+}
+
+a,
+button,
+input,
+select,
+textarea {
+  &:focus {
+    box-shadow: none !important;
+    outline: #fff dotted 2px !important;
+    outline-offset: 0.05em !important;
+  }
 }

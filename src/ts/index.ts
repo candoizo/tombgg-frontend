@@ -17,7 +17,8 @@ export const contracts = (network?: string) => {
       vars.frens,
       [
         'function ticketCost(uint256 _id) public pure returns (uint256 _frensCost)',
-        'function staked(address _account) external view returns (uint256 ghst_, uint256 uniV2PoolTokens_)'
+        'function staked(address _account) external view returns (uint256 ghst_, uint256 uniV2PoolTokens_)',
+        'function balanceOfAll(address _owner) external view returns (uint256[] memory balances_)'
       ],
       fallback
     ),
