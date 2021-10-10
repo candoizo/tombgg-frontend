@@ -1,27 +1,45 @@
 <script lang="ts">
-  import { providers, utils } from 'ethers';
+  import detectEthereumProvider from '@metamask/detect-provider';
+  import { formatEther } from '@ethersproject/units';
+  import { Web3Provider } from '@ethersproject/providers';
   import { contracts } from '../../ts';
   export let address;
   export let signer;
-  export let allowance;
+  export let balances;
 
-  import detectEthereumProvider from '@metamask/detect-provider';
   const connect = async () => {
     console.log(`zomg connect wallet plz`);
     const provider = await detectEthereumProvider();
     const enabledAccounts = await provider.enable();
     address = enabledAccounts[0];
-    signer = new providers.Web3Provider(provider).getSigner();
+    signer = new Web3Provider(provider).getSigner();
     formatAddress = address.slice(0, 4) + '...' + address.slice(-4);
     console.warn(`CURRENT NETWORK: `, Number(provider.chainId), address);
 
-    allowance = parseFloat(
-      utils.formatEther(
-        await contracts.ghst.allowance(address, contracts.chef.address)
-      )
-    );
+    await updateBalances();
+    console.log(`user ghst allowance for chef:`, balances);
+  };
 
-    console.log(`user ghst allowance for chef:`, allowance);
+  export const updateBalances = async () => {
+    const { ghst, chef } = contracts();
+
+    const ghstInfo = {
+      allowance: parseFloat(
+        formatEther(await ghst.allowance(address, chef.address))
+      ),
+      balance: parseFloat(formatEther(await ghst.balanceOf(address)))
+    };
+
+    const chefInfo = {
+      allowance: parseFloat(
+        formatEther(await chef.allowance(address, chef.address))
+      ),
+      balance: parseFloat(formatEther(await chef.balanceOf(address)))
+    };
+
+    balances = { ghst: ghstInfo, chef: chefInfo };
+
+    console.log(`user ghst allowance for chef:`, balances, await chef.profit());
   };
 
   let formatAddress;

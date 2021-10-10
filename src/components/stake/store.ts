@@ -1,21 +1,55 @@
-import { contracts, provider } from '../../ts/index';
+import { BigNumber } from '@ethersproject/bignumber';
+import { aggregate } from '@makerdao/multicall';
+import { contracts, multicallConfig } from '../../ts';
 import { readable, derived } from 'svelte/store';
-import { utils } from 'ethers';
+import { formatEther } from '@ethersproject/units';
 import get from 'axios';
 
 const updateBalances = async (set?) => {
-  const totalSupply = parseFloat(
-    utils.formatEther(await contracts.chef.totalSupply())
-  );
-  console.log(`totalSupply:`, totalSupply);
+  const { chef, staking } = contracts();
+  const info = [
+    {
+      returns: [
+        ['totalSupply', (val: BigNumber) => parseFloat(formatEther(val))]
+      ],
+      target: chef.address,
+      call: ['totalSupply()(uint256)']
+    },
+    {
+      returns: [['profit', (val: BigNumber) => parseFloat(formatEther(val))]],
+      target: chef.address,
+      call: ['profit()(uint256)']
+    },
+    {
+      returns: [
+        ['exchangeRate', (val: BigNumber) => parseFloat(formatEther(val))]
+      ],
+      target: chef.address,
+      call: ['exchangeRate()(uint256)']
+    },
+    {
+      returns: [['frens', (val: BigNumber) => parseFloat(formatEther(val))]],
+      target: staking.address,
+      call: ['frens(address)(uint256)', chef.address]
+    }
+    // {
+    //   returns: [
+    //     ['balanceOf', (val: BigNumber) => parseFloat(formatEther(val))]
+    //   ],
+    //   target: chef.address,
+    //   call: ['balanceOf(addr)(uint256)', ]
+    // }
+  ];
+  const mc = await aggregate(info, multicallConfig());
+
   const price =
     (
       await get(
         `https://api.coingecko.com/api/v3/simple/price?ids=aavegotchi&vs_currencies=usd`
       )
     ).data['aavegotchi']['usd'] || 'unknown';
-  console.log(`ghstUsd price: `, price);
-  const res = { totalSupply, price };
+  const res = { price, ...mc.results.transformed };
+  console.log(`dash info: `, res);
   if (set) set(res);
   return res;
 };

@@ -1,8 +1,7 @@
 /* eslint-env node */
-// const tailwindcssforms = require('@tailwindcss/forms');
 module.exports = {
   mode: 'jit',
-  purge: ['./src/**/*.{html, svelte}'],
+  purge: ['./src/**/*.html', './src/**/*.svelte'],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {}

@@ -9,8 +9,8 @@
       on:click={() => (view = 'stake')}
     >
       <div class="mx-auto w-full">
-        🚜 Stake GHST
-        <div class="text-xs">exchange xGHST</div>
+        Stake GHST
+        <div class="text-xs">make FRENS</div>
       </div>
     </div>
   </div>
@@ -20,7 +20,7 @@
       on:click={() => (view = 'tickets')}
     >
       <div class="mx-auto ">
-        🎫 Buy Tickets
+        Buy Tickets
         <div class="text-xs">over the counter</div>
       </div>
     </div>

@@ -1,13 +1,23 @@
 <script lang="ts">
   export const linkInfo = [
-    { href: '/faq', color: 'purple', text: 'Questions' },
+    {
+      href: '/faq',
+      color: 'bg-purple-500',
+      hover: 'bg-purple-700',
+      text: 'Questions'
+    },
     {
       href: 'https://polygonscan.com/address',
-      color: 'indigo',
+      color: 'bg-indigo-500',
+      hover: 'bg-indigo-700',
       text: 'Contract'
     },
-    { href: '/faq', color: 'blue', text: 'GitHub' }
-    // { href: '/faq', color: 'yellow', text: 'Vote' }
+    {
+      href: '/faq',
+      color: 'bg-blue-500',
+      hover: 'bg-blue-700',
+      text: 'GitHub'
+    }
   ];
 </script>
 
@@ -15,7 +25,7 @@
   {#each linkInfo as info}
     <a
       href={info.href}
-      class="bg-{info.color}-500 hover:bg-{info.color}-700 rounded p-2 w-28 text-sm flex"
+      class="{info.color} hover:{info.hover} rounded p-2 w-28 text-sm flex"
     >
       <div class="mx-auto">{info.text}</div>
     </a>

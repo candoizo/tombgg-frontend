@@ -1,115 +1,75 @@
 <script context="module" lang="ts">
-  import { getProps, contracts, approve, ticketCosts } from '../ts';
+  import { getProps, ticketCosts } from '../ts';
   export async function load() {
     const ghstPerThousandFrens = 1.5;
     const tickets = await ticketCosts(ghstPerThousandFrens);
-    const pro = await getProps();
-    console.log(pro);
     return {
       status: 200,
       props: {
-        ticketPrices: tickets,
-        ...pro
+        ticketbook: tickets,
+        ...(await getProps())
       }
     };
   }
 </script>
 
-<!-- props available here -->
 <script lang="ts">
-  import '../app.scss';
+  // top section
   import Header from '../components/heading/Header.svelte';
   import Navbar from '../components/Navbar.svelte';
   import Alert from '../components/Alert.svelte';
 
+  // staking page
   import StakeDash from '../components/stake/Dash.svelte';
   import Stake from '../components/stake/Stake.svelte';
-  import StakeInterface from '../components/stake/Interface.svelte';
 
+  // ticket page
   import TicketHeader from '../components/shop/Header.svelte';
   import TicketFields from '../components/shop/TicketFields.svelte';
 
-  let user = { active: 'stake', account: '' };
-  export let accountSigner;
-  export let userAccount;
-  export let userBalance;
-  export let userStake;
-  export let totalCost;
-  export let ticketchef;
-  export let ticketPrices;
-  export let pendingTx;
-  export let allowance = 0;
-  export let ticketAmounts = Object.fromEntries(
-    Object.keys(ticketPrices).map((key) => [key, 0])
-  );
-  let stakeAmount = '';
-
-  import { utils } from 'ethers';
-
-  async function buyTickets() {
-    console.log('Buying tickets! zomg', ticketPrices, ticketAmounts);
-    const tx = await ticketchef.swapStakeForTickets(
-      Object.keys(ticketAmounts),
-      Object.values(ticketAmounts)
-    );
-    console.log(`Approve tx: `, tx);
-    pendingTx = tx.hash;
-    const conf = await tx.wait();
-    console.log(`Approve conf: `, conf);
-  }
-
-  function updateTotal() {
-    console.log(`zomg changed buy field plz`, ticketPrices, ticketAmounts);
-    let total = 0;
-    Object.keys(ticketPrices).map((key) => {
-      console.log((ticketPrices[key] * ticketAmounts[key]).toFixed(3));
-      total += parseFloat((ticketPrices[key] * ticketAmounts[key]).toFixed(3));
-    });
-    totalCost = total;
-  }
-
-  async function updateBalances() {
-    const balance = await contracts.ghst.balanceOf(userAccount);
-    userBalance = utils.formatEther(balance);
-    const stakeBalance = await ticketchef.balanceOf(userAccount);
-    userStake = utils.formatEther(stakeBalance);
-  }
-
+  export let ticketbook;
+  let pendingTx = '';
   let view = 'stake';
-
   let signer;
-
-  let address;
+  let address = '';
+  let buyTickets;
+  let totalCost;
+  let balances = {
+    ghst: {
+      allowance: 0,
+      balance: 0
+    },
+    chef: {
+      allowance: 0,
+      balance: 0
+    }
+  };
+  let updateBalances;
 </script>
 
-<Header bind:address bind:signer bind:allowance />
+<Header bind:address bind:signer bind:balances bind:updateBalances />
 
 <Navbar bind:view />
 
 <div class="w-4/5 mx-auto mt-4">
   {#if view === 'stake'}
     <StakeDash />
-    <Stake bind:signer bind:pendingTx bind:allowance />
-    <Alert hash={pendingTx} />
+    <Stake {signer} bind:pendingTx bind:balances {updateBalances} />
   {:else if view === 'tickets'}
-    <div class="bg-gray-800 rounded-lg p-4">
-      <TicketHeader {buyTickets} {address} {totalCost} />
-      <TicketFields
-        {ticketPrices}
-        {ticketAmounts}
-        onChange={() => updateTotal()}
-      />
+    <div class="bg-gray-800 rounded-lg p-4 shadow-xl">
+      <div class="bg-gray-900 rounded-lg shadow-xl">
+        <TicketHeader {buyTickets} {address} {totalCost} {signer} />
+        <TicketFields
+          {ticketbook}
+          {signer}
+          {updateBalances}
+          bind:balances
+          bind:buyTickets
+          bind:totalCost
+          bind:pendingTx
+        />
+      </div>
     </div>
   {/if}
+  <Alert hash={pendingTx} />
 </div>
-
-<style lang="scss">
-  :global(body) {
-    background: rgb(37, 18, 77);
-    max-width: 650px;
-    margin: auto;
-    padding: 0 16px;
-    color: white;
-    overflow-y: hidden;
-  }
-</style>

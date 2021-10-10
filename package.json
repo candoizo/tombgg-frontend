@@ -1,13 +1,17 @@
 {
+  "name": "ticketshop",
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "eslint .",
     "dev": "svelte-kit dev",
+    "dev:local": "NETWORK=localhost svelte-kit dev",
+    "dev:mumbai": "NETWORK=mumbai svelte-kit dev",
+    "dev:polygon": "NETWORK=polygon svelte-kit dev",
     "build": "svelte-kit build --verbose",
     "preview": "svelte-kit preview"
   },
   "devDependencies": {
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@sveltejs/adapter-vercel": "next",
     "@sveltejs/kit": "next",
     "@tailwindcss/forms": "^0.3.4",
@@ -18,26 +22,34 @@
     "cssnano": "^5.0.8",
     "cssnano-preset-advanced": "^5.1.4",
     "debug": "^4.3.2",
-    "eslint": "^7.32.0",
+    "eslint": "7.32.0",
     "eslint-plugin-svelte3": "^3.2.1",
     "postcss": "^8.3.9",
     "postcss-preset-env": "^6.7.0",
     "prettier": "^2.4.1",
     "prettier-plugin-svelte": "^2.4.0",
     "pug": "^3.0.2",
+    "rollup-plugin-terser": "^7.0.2",
     "sass": "^1.42.1",
     "svelte": "^3.43.1",
+    "svelte-awesome": "^2.4.2",
+    "svelte-image": "^0.2.9",
     "svelte-preprocess": "^4.9.8",
     "tailwindcss": "^2.2.16",
+    "tailwindcss-debug-screens": "^2.1.0",
     "typescript": "^4.4.3",
     "vercel": "^23.1.2"
   },
   "dependencies": {
     "@aavegotchi/sdk": "^1.0.0-9a",
+    "@ethersproject/bignumber": "^5.4.2",
+    "@ethersproject/contracts": "^5.4.1",
+    "@ethersproject/providers": "^5.4.5",
+    "@ethersproject/units": "^5.4.0",
     "@makerdao/multicall": "^0.12.0",
     "@metamask/detect-provider": "^1.2.0",
     "axios": "^0.22.0",
-    "ethers": "^5.4.7"
+    "numeral": "^2.0.6"
   },
   "prettier": {
     "arrowParens": "always",

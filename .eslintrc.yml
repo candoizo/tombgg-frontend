@@ -4,6 +4,7 @@ env:
 parser: '@typescript-eslint/parser'
 parserOptions:
   sourceType: module
+  emcaVersion: 2021
 plugins:
   - 'svelte3'
   - '@typescript-eslint'

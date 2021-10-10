@@ -4,7 +4,7 @@
   export let totalCost;
 
   import { contracts } from '../../ts';
-  import { utils } from 'ethers';
+  import { formatEther } from '@ethersproject/units';
 </script>
 
 <div class="flex justify-between bg-purple-800 rounded-lg px-4 py-1 mb-4">
@@ -16,10 +16,10 @@
         {#if !address}
           not connected
         {:else}
-          {#await contracts.ghst.balanceOf(address)}
+          {#await contracts().ghst.balanceOf(address)}
             loading...
           {:then balance}
-            {parseFloat(utils.formatEther(balance)).toFixed(2)} GHST
+            {parseFloat(formatEther(balance)).toFixed(2)} GHST
           {:catch balance}
             fail
           {/await}

@@ -1,39 +1,53 @@
 import { aggregate } from '@makerdao/multicall';
-import { BigNumber, utils } from 'ethers';
-import { getDefaultProvider, Contract } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
+import { formatEther } from '@ethersproject/units';
+import { getDefaultProvider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 import { IERC20__factory } from '@aavegotchi/sdk';
 
-import { approve } from './tx';
-import { stake, unstake, ticketchef } from './ticketchef';
-export { approve, stake, unstake, ticketchef };
-
-export const rpcUrl = 'http://localhost:8545';
-export const provider = getDefaultProvider(rpcUrl);
-
-export const mcConfig = {
-  // from https://github.com/makerdao/multicall
-  multicallAddress: '0x11ce4B23bD875D7F5C6a31084f55fDe1e9A87507',
-  rpcUrl: rpcUrl
+import addrs from './addresses';
+import chefAbi from './ticketchef.json';
+export const contracts = (network?: string) => {
+  const env = process.env.NODE_ENV;
+  const vars = addrs[env.startsWith(`dev`) ? 31337 : 137];
+  const fallback = getDefaultProvider(vars.rpc);
+  return {
+    ghst: IERC20__factory.connect(vars.ghst, fallback),
+    staking: new Contract(
+      vars.frens,
+      [
+        'function ticketCost(uint256 _id) public pure returns (uint256 _frensCost)',
+        'function staked(address _account) external view returns (uint256 ghst_, uint256 uniV2PoolTokens_)'
+      ],
+      fallback
+    ),
+    chef: new Contract(
+      vars.chef,
+      chefAbi,
+      // [
+      //   'function totalSupply() external view returns (uint256 totalSupply_)',
+      //   'function balanceOf(address _owner, uint256 _id) external view returns (uint256 balance_)',
+      //   'function swapStakeForTickets(uint256[] calldata _ticketTypes, uint256[] calldata _ticketValues) public',
+      //   'function enter(uint256 _amount) public',
+      //   'function leave(uint256 _share) public'
+      // ],
+      fallback
+    )
+  };
 };
 
-export const contracts = {
-  ghst: IERC20__factory.connect(
-    '0x385eeac5cb85a38a9a07a70c73e0a3271cfb54a7',
-    provider
-  ),
-  staking: new Contract(
-    '0xA02d547512Bb90002807499F05495Fe9C4C3943f',
-    [
-      'function ticketCost(uint256 _id) public pure returns (uint256 _frensCost)'
-    ],
-    provider
-  ),
-  chef: ticketchef(provider)
+export const multicallConfig = (network?: string) => {
+  const env = process.env.NODE_ENV;
+  const vars = addrs[env.startsWith(`dev`) ? 31337 : 137];
+  return {
+    multicallAddress: vars.multicall,
+    rpcUrl: vars.rpc
+  };
 };
 
 export async function getProps(): Promise<unknown> {
-  const props = { ...contracts };
-
+  const props = { ...contracts() };
+  console.log(process.env.NODE_ENV);
   return {
     status: 200,
     props
@@ -41,6 +55,7 @@ export async function getProps(): Promise<unknown> {
 }
 
 export async function ticketCosts(ghstPerThousandFrens: number) {
+  const { staking } = contracts();
   const prices = Array(6)
     .fill(undefined)
     .map((_, index) => {
@@ -49,14 +64,14 @@ export async function ticketCosts(ghstPerThousandFrens: number) {
         returns: [
           [
             'ticket_cost_' + index,
-            (val: BigNumber) => parseFloat(utils.formatEther(val))
+            (val: BigNumber) => parseFloat(formatEther(val))
           ]
         ],
-        target: contracts.staking.address,
+        target: staking.address,
         call: ['ticketCost(uint256)(uint256)', index]
       };
     });
-  const multires = await aggregate(prices, mcConfig);
+  const multires = await aggregate(prices, multicallConfig());
   return Object.fromEntries(
     Object.keys(multires.results.transformed).map((key, index) => {
       const frenCost = multires.results.transformed[key];
