@@ -1,52 +1,25 @@
 <!DOCTYPE html>
-<html
-  lang="en"
-  style="width: 100%; height: 100%; min-width: 100%; min-height: 100%"
->
+<html lang="en" class="w-full h-full">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="follow, index" />
-    <title>fren.fi</title>
-    <meta
-      content="SvelteKit app fetching data from the SpaceX GraphQL API, deployed to Vercel."
-      name="description"
-    />
-    <meta
-      property="og:title"
-      content="SpaceX Launches | SvelteKit and Vercel"
-    />
-    <meta property="og:image" content="/twitter.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@vercel" />
-    <meta
-      name="twitter:title"
-      content="SpaceX Launches | SvelteKit and Vercel"
-    />
-    <meta
-      name="twitter:description"
-      content="SvelteKit app fetching data from the SpaceX GraphQL API, deployed to Vercel."
-    />
-    <meta name="twitter:image" content="/twitter.png" />
     %svelte.head%
+
+    <link rel="preload" as="image" href="/bg.svg" />
   </head>
-  <body class="text-white w-full">
+  <body class="text-white w-full h-full">
     <div class="w-full" id="svelte">%svelte.body%</div>
   </body>
 </html>
 
 <style lang="scss">
   body {
-    background-image: url('bg.svg');
+    background-image: url('/bg.svg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     min-width: 100%;
     min-height: 100%;
-
-    // disable scrollbar flashes
-    position: fixed;
-    overflow-y: hidden;
   }
 </style>

@@ -1,6 +1,3 @@
-body {
-}
-
 a,
 button,
 input,
@@ -11,4 +8,14 @@ textarea {
     outline: #fff dotted 2px !important;
     outline-offset: 0.05em !important;
   }
+}
+
+body {
+  // disable scrollbar flashes
+  position: fixed;
+  overflow-y: hidden;
+}
+
+img {
+  image-rendering: pixelated;
 }

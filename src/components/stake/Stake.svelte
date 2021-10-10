@@ -14,6 +14,7 @@
   export let updateBalances;
   export let title;
   export let subtitle;
+  export let rate;
 
   const approve = async () => {
     const { ghst, chef } = contracts();
@@ -81,8 +82,8 @@
     <div class="flex w-full py-2 mx-auto justify-around bg-purple-700 rounded">
       <div class="flex justify-around w-2/5">
         <img
-          class="bg-gray-900 rounded-full"
-          src="/ghst.gif"
+          class="bg-gray-900 rounded-full object-contain p-2"
+          src="/ghst.svg"
           width="64px"
           height="64px"
           alt="GHST icon"
@@ -96,7 +97,7 @@
         <div
           class="text-md my-auto text-white font-bold bg-gray-900 rounded-lg text-center w-32 my-auto"
         >
-          APY 1337%
+          {rate} FRENS <br /> PER TOKEN
         </div>
         <div class="text-xs my-auto">Auto-compound GHST + rewards!</div>
       </div>
@@ -169,7 +170,7 @@
     {/if}
   </div>
   {#if signer}
-    <div class="flex justify-around mx-2 mt-4">
+    <div class="flex justify-around mt-4">
       <Info title="🏦 Your Deposit">
         {numeral(balances.chef.balance * $info.exchangeRate).format('0.00a')} GHST
       </Info>

@@ -9,16 +9,14 @@
 </script>
 
 <div
-  class="top-0 aboslute w-full flex flex-col justify-between mx-auto bg-gray-800 rounded py-2 px-4 shadow-2xl select-none"
+  class="top-0 aboslute w-full flex flex-col justify-between mx-auto bg-purple-900 border-b-4 border-purple-800 rounded py-2 px-4 shadow-2xl select-none"
 >
   <div class="flex mx-auto w-full lg:w-4/5 xl:w-3/5">
     <div class="flex">
-      <img src="/ghst.gif" class="object-contain" width="40" height="40" />
+      <img src="/icon.svg" class="object-contain" width="60" height="60" />
       <div class="flex flex-col justify-around ml-2">
         <div class="my-auto text-xl font-bold hidden sm:flex">tomb.gg</div>
-        <div class="my-auto text-sm hidden sm:flex italic">
-          a vault for all your FRENS
-        </div>
+        <div class="my-auto text-sm hidden sm:flex italic">let make FRENS</div>
       </div>
     </div>
 

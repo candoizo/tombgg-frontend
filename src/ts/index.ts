@@ -37,6 +37,11 @@ export const contracts = (network?: string) => {
   };
 };
 
+export const vars = (network?: string) => {
+  const env = process.env.NODE_ENV;
+  return addrs[env.startsWith(`dev`) ? 31337 : 137];
+};
+
 export const multicallConfig = (network?: string) => {
   const env = process.env.NODE_ENV;
   const vars = addrs[env.startsWith(`dev`) ? 31337 : 137];

@@ -21,10 +21,8 @@
     <Info title="🏦 Total Deposits">
       {#if $info.price > 0}
         {numeral($info.price * ($info.totalSupply * $info.exchangeRate)).format(
-          '0.00a'
-        )} USD | {numeral($info.totalSupply * $info.exchangeRate).format(
-          '0.00a'
-        )}
+          '$0.00a'
+        )} | {numeral($info.totalSupply * $info.exchangeRate).format('0.00a')}
         GHST
       {:else}
         Loading

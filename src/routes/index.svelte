@@ -55,20 +55,22 @@
 
 <!-- <Navbar bind:view /> -->
 
-<div class="px-2 w-full md:w-4/5 lg:w-3/5 xl:w-2/5 mx-auto mt-4">
+<div class="px-2 w-full md:w-4/5 lg:w-3/5 xl:w-2/5 mx-auto mt-4 overflow-auto">
   {#if view === 'stake'}
     <StakeDash />
     <Stake
       title="GHST"
-      subtitle="Aavegotchi single stake GHST"
+      subtitle="Aavegotchi single stake"
+      rate="1"
       {signer}
       bind:pendingTx
       bind:balances
       {updateBalances}
     />
-    <Stake
+    <!-- <Stake
       title="GHST-USDC"
       subtitle="Aavegotchi QuickSwap GHST-USDC LP"
+      rate="1"
       {signer}
       bind:pendingTx
       bind:balances
@@ -77,11 +79,12 @@
     <Stake
       title="GHST-WETH"
       subtitle="Aavegotchi QuickSwap GHST-WETH LP"
+      rate="1"
       {signer}
       bind:pendingTx
       bind:balances
       {updateBalances}
-    />
+    /> -->
   {:else if view === 'tickets'}
     <ShopDash />
     <div class="bg-gray-800 rounded-lg p-4 shadow-xl">

@@ -1,9 +1,10 @@
 <script lang="ts">
+  import { aggregate } from '@makerdao/multicall';
   import detectEthereumProvider from '@metamask/detect-provider';
   import { BigNumber } from '@ethersproject/bignumber';
   import { formatEther } from '@ethersproject/units';
   import { Web3Provider } from '@ethersproject/providers';
-  import { contracts } from '../../ts';
+  import { contracts, multicallConfig } from '../../ts';
   export let address;
   export let signer;
   export let balances;
@@ -23,29 +24,60 @@
 
   export const updateBalances = async () => {
     const { ghst, chef, staking } = contracts();
+    const balanceQueries = [
+      {
+        returns: [
+          ['ghstAllowance', (val: BigNumber) => parseFloat(formatEther(val))]
+        ],
+        target: ghst.address,
+        call: ['allowance(address,address)(uint256)', address, chef.address]
+      },
+      {
+        returns: [
+          ['ghstBalance', (val: BigNumber) => parseFloat(formatEther(val))]
+        ],
+        target: ghst.address,
+        call: ['balanceOf(address)(uint256)', address]
+      },
+      {
+        returns: [
+          ['chefAllowance', (val: BigNumber) => parseFloat(formatEther(val))]
+        ],
+        target: chef.address,
+        call: ['allowance(address,address)(uint256)', address, chef.address]
+      },
+      {
+        returns: [
+          ['chefBalance', (val: BigNumber) => parseFloat(formatEther(val))]
+        ],
+        target: chef.address,
+        call: ['balanceOf(address)(uint256)', address]
+      },
+      {
+        returns: [
+          [
+            'stakingTickets',
+            (val) => val.map((value) => parseFloat(value.toString()))
+          ]
+        ],
+        target: staking.address,
+        call: ['balanceOfAll(address)(uint256[])', address]
+      }
+    ];
+    const r = await aggregate(balanceQueries, multicallConfig());
 
-    const ghstInfo = {
-      allowance: parseFloat(
-        formatEther(await ghst.allowance(address, chef.address))
-      ),
-      balance: parseFloat(formatEther(await ghst.balanceOf(address)))
+    const {
+      ghstAllowance,
+      ghstBalance,
+      chefAllowance,
+      chefBalance,
+      stakingTickets
+    } = r.results.transformed;
+    balances = {
+      ghst: { allowance: ghstAllowance, balance: ghstBalance },
+      chef: { allowance: chefAllowance, balance: chefBalance },
+      staking: { tickets: stakingTickets }
     };
-
-    const chefInfo = {
-      allowance: parseFloat(
-        formatEther(await chef.allowance(address, chef.address))
-      ),
-      balance: parseFloat(formatEther(await chef.balanceOf(address)))
-    };
-
-    const stakingInfo = {
-      tickets: (await staking.balanceOfAll(address)).map((q: BigNumber) =>
-        q.toString()
-      )
-    };
-
-    balances = { ghst: ghstInfo, chef: chefInfo, staking: stakingInfo };
-
     console.log(`user ghst allowance for chef:`, balances);
   };
 
@@ -58,14 +90,14 @@
     {view === 'stake' ? 'underline' : ''}"
     on:click={() => (view = 'stake')}
   >
-    <div class="my-auto">Stake GHST</div>
+    <div class="my-auto">Staking</div>
   </div>
   <div
     class="rounded p-1 px-4 h-12 mx-2 my-auto flex cursor-pointer w-32 justify-center rounded hover:bg-gray-900
     {view === 'tickets' ? 'underline' : ''}"
     on:click={() => (view = 'tickets')}
   >
-    <div class="my-auto">Buy Tickets</div>
+    <div class="my-auto">Tickets</div>
   </div>
 
   <div

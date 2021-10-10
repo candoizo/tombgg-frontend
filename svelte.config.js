@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-env node */
 import vercel from '@sveltejs/adapter-vercel';
 import preprocess from 'svelte-preprocess';
 import image from 'svelte-image';
