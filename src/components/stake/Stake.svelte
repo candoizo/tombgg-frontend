@@ -12,6 +12,8 @@
   export let allowance;
   export let balances;
   export let updateBalances;
+  export let title;
+  export let subtitle;
 
   const approve = async () => {
     const { ghst, chef } = contracts();
@@ -77,16 +79,18 @@
 >
   <div class="bg-gray-900 rounded-lg shadow-xl">
     <div class="flex w-full py-2 mx-auto justify-around bg-purple-700 rounded">
-      <img
-        class="bg-gray-900 rounded-full"
-        src="/ghst.gif"
-        width="64px"
-        height="64px"
-        alt="GHST icon"
-      />
-      <div class="text-xl my-auto">
-        <div class="font-bold text-xl my-auto">GHST V1</div>
-        <div class="text-sm my-auto">Aavegotchi</div>
+      <div class="flex justify-around w-2/5">
+        <img
+          class="bg-gray-900 rounded-full"
+          src="/ghst.gif"
+          width="64px"
+          height="64px"
+          alt="GHST icon"
+        />
+        <div class="text-xl my-auto mr-auto ml-2">
+          <div class="font-bold text-xl my-auto">{title}</div>
+          <div class="text-sm my-auto">{subtitle}</div>
+        </div>
       </div>
       <div class="flex flex-col justify-center items-center">
         <div
@@ -139,7 +143,11 @@
         <div class="flex flex-col">
           <div class="flex justify-between text-sm font-bold uppercase">
             <div class="uppercase underline">withdraw</div>
-            <div>{numeral(balances.chef.balance).format('0.0a')} xGHST</div>
+            <div>
+              {numeral(balances.chef.balance * $info.exchangeRate).format(
+                '0.00a'
+              )} GHST
+            </div>
           </div>
           <input class="rounded-sm text-black" bind:value={withdrawAmount} />
           <div class="flex">
@@ -165,7 +173,11 @@
       <Info title="🏦 Your Deposit">
         {numeral(balances.chef.balance * $info.exchangeRate).format('0.00a')} GHST
       </Info>
-      <Info title="🏦 Your Earnings">hi</Info>
+      <Info title="🏦 Your Share"
+        >{numeral(balances.chef.balance / $info.totalSupply).format(
+          '0.00[0]%'
+        )}</Info
+      >
     </div>
   {/if}
 </div>

@@ -16,7 +16,7 @@
 <script lang="ts">
   // top section
   import Header from '../components/heading/Header.svelte';
-  import Navbar from '../components/Navbar.svelte';
+  // import Navbar from '../components/Navbar.svelte';
   import Alert from '../components/Alert.svelte';
 
   // staking page
@@ -58,7 +58,30 @@
 <div class="px-2 w-full md:w-4/5 lg:w-3/5 xl:w-2/5 mx-auto mt-4">
   {#if view === 'stake'}
     <StakeDash />
-    <Stake {signer} bind:pendingTx bind:balances {updateBalances} />
+    <Stake
+      title="GHST"
+      subtitle="Aavegotchi single stake GHST"
+      {signer}
+      bind:pendingTx
+      bind:balances
+      {updateBalances}
+    />
+    <Stake
+      title="GHST-USDC"
+      subtitle="Aavegotchi QuickSwap GHST-USDC LP"
+      {signer}
+      bind:pendingTx
+      bind:balances
+      {updateBalances}
+    />
+    <Stake
+      title="GHST-WETH"
+      subtitle="Aavegotchi QuickSwap GHST-WETH LP"
+      {signer}
+      bind:pendingTx
+      bind:balances
+      {updateBalances}
+    />
   {:else if view === 'tickets'}
     <ShopDash />
     <div class="bg-gray-800 rounded-lg p-4 shadow-xl">
