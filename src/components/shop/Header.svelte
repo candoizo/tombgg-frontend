@@ -7,15 +7,17 @@
   import numeral from 'numeral';
 </script>
 
-<div class="flex justify-between bg-purple-800 rounded-lg px-4 py-1 mb-4 h-20">
-  <div class="my-auto">
-    <div class="flex">
-      <div class="my-auto text-xl">
+<div
+  class="flex flex-col-reverse sm:flex-row justify-center sm:justify-between bg-purple-800 rounded-lg px-4 py-1 mb-4 h-40 sm:h-20"
+>
+  <div class="m-auto sm:mx-0">
+    <div class="flex mx-auto">
+      <div class="my-auto text-md md:text-lg">
         {#if !address}
           You must connect a wallet.
         {:else}
           <div class="flex flex-col">
-            <div class="flex">
+            <div class="flex justify-center">
               <div class="my-auto">
                 <b>YOUR BALANCES:</b>
                 {numeral(balances.ghst.balance).format('0.00a')}
@@ -27,9 +29,9 @@
                 height="20px"
               />
             </div>
-            <div class="inline flex mt-2 -ml-4">
+            <div class="inline flex mt-2 -ml-2">
               {#each balances.staking.tickets as amount, index}
-                <div class="flex flex-col mx-4 justify-center text-sm">
+                <div class="flex flex-col mx-2 justify-center text-sm">
                   <img
                     src="/tickets/{index}.svg"
                     class="object-contain mx-auto"
@@ -47,12 +49,12 @@
   </div>
   <div class="my-auto flex">
     <div
-      class="rounded bg-green-600 hover:bg-green-500 w-32 p-1 m-2 flex flex-col cursor-pointer text-center"
+      class="rounded bg-green-600 hover:bg-green-500 w-full sm:w-36 p-1 m-2 flex flex-col cursor-pointer text-center"
       on:click={buyTickets}
     >
-      <div class="flex m-auto uppercase font-semibold">Purchase</div>
+      <div class="flex m-auto uppercase font-semibold">Buy Tickets</div>
       <div class="flex justify-center">
-        <div class="my-auto text-sm">{totalCost || 0} GHST</div>
+        <div class="my-auto text-sm">{totalCost} GHST</div>
       </div>
     </div>
   </div>

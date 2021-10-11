@@ -30,7 +30,7 @@
 
   export let ticketbook;
   let pendingTx = '';
-  let view = 'stake';
+  let view = 'staking';
   let signer;
   let address = '';
   let buyTickets;
@@ -56,7 +56,7 @@
 <!-- <Navbar bind:view /> -->
 
 <div class="px-2 w-full md:w-4/5 lg:w-3/5 xl:w-2/5 mx-auto mt-4 overflow-auto">
-  {#if view === 'stake'}
+  {#if view === 'staking'}
     <StakeDash />
     <Stake
       title="GHST"
@@ -67,6 +67,15 @@
       bind:balances
       {updateBalances}
     />
+    <!-- <Stake
+      title="GHST-USDC"
+      subtitle="Aavegotchi/QuickSwap GHST-USDC LP"
+      rate="1"
+      {signer}
+      bind:pendingTx
+      bind:balances
+      {updateBalances}
+    /> -->
     <!-- <Stake
       title="GHST-USDC"
       subtitle="Aavegotchi QuickSwap GHST-USDC LP"

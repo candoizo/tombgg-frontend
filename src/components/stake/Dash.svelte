@@ -17,7 +17,7 @@
 <div
   class="bg-gray-800 rounded-lg flex flex-col py-4 justify-around mb-4 select-none shadow-xl"
 >
-  <div class="flex justify-around">
+  <div class="flex justify-around gap-4 flex-col xs:flex-row">
     <Info title="🏦 Total Deposits">
       {#if $info.price > 0}
         {numeral($info.price * ($info.totalSupply * $info.exchangeRate)).format(

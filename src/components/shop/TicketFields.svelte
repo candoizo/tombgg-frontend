@@ -45,39 +45,53 @@
   }
 </script>
 
-<div class="flex flex-col grid-cols-2 w-full mx-auto">
+<div class="flex w-full mx-auto pb-4 grid grid-cols-2 md:grid-cols-3">
   {#each Object.keys(ticketbook) as index}
-    <div class="flex justify-center mx-4">
+    <div
+      class="flex justify-center mx-auto flex-col select-none w-1/3 md:w-1/2"
+    >
       <img
         src="/tickets/{index}.svg"
-        width="100"
-        height="100"
+        width="140"
+        height="140"
         class="mx-auto my-4"
         alt="a raffle ticket"
       />
-      <div class="flex justify-end w-2/3">
-        <div class="flex flex-col justify-center">
-          <div class="text-2xs -mb-6 text-center" style="font-size: 12px">
-            price
-          </div>
-          <div class="my-auto">{ticketbook[index]} GHST ×</div>
+      <div class="flex my-auto justify-center">
+        <div>{ticketbook[index]}</div>
+        <img
+          src="/ghst.svg"
+          width="24"
+          height="24"
+          class="ml-2 my-auto object-contain"
+        />
+      </div>
+      <div class="my-auto flex justify-center mt-2">
+        <div
+          class="bg-purple-400 rounded-l px-2 cursor-pointer"
+          on:click={() => {
+            if (ticketAmounts[index])
+              ticketAmounts[index] = ticketAmounts[index] - 1;
+            updateTotal();
+          }}
+        >
+          -
         </div>
-        <div class="flex flex-col w-1/4 justify-center">
-          <div class="text-2xs text-center mb-1" style="font-size: 12px">
-            amount
-          </div>
-          <input
-            type="number"
-            min="0"
-            class="text-black my-auto mx-1 text-center rounded -mt-0"
-            bind:value={ticketAmounts[index]}
-            on:change={() => updateTotal()}
-          />
-        </div>
-        <div class="my-auto hidden">
-          = {ticketAmounts[index] > 0
-            ? (ticketbook[index] * ticketAmounts[index]).toFixed(3)
-            : 0} GHST
+        <input
+          min="0"
+          class="text-black my-auto text-center w-10 text-center"
+          bind:value={ticketAmounts[index]}
+          on:change={() => updateTotal()}
+          on:keyup={() => updateTotal()}
+        />
+        <div
+          class="bg-purple-400 rounded-r px-2 cursor-pointer"
+          on:click={() => {
+            ticketAmounts[index] = ticketAmounts[index] + 1;
+            updateTotal();
+          }}
+        >
+          +
         </div>
       </div>
     </div>

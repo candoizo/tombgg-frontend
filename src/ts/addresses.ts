@@ -24,7 +24,7 @@ export default {
       3: quickswap.weth,
       4: sushi.matic
     },
-    chef: '0x6B763F54D260aFF608CbbAeD8721c96992eC24Db',
+    chef: '0xF48883F2ae4C4bf4654f45997fE47D73daA4da07',
     multicall: '0x11ce4B23bD875D7F5C6a31084f55fDe1e9A87507'
   },
   137: {
@@ -38,7 +38,7 @@ export default {
       3: quickswap.weth,
       4: sushi.matic
     },
-    chef: '0x8AFB0C54bAE39A5e56b984DF1C4b5702b2abf205',
+    chef: '0xF48883F2ae4C4bf4654f45997fE47D73daA4da07',
     multicall: '0x11ce4B23bD875D7F5C6a31084f55fDe1e9A87507'
   },
   80001: {

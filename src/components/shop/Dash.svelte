@@ -17,15 +17,15 @@
 <div
   class="bg-gray-800 rounded-lg flex flex-col py-4 justify-around mb-4 select-none shadow-xl"
 >
-  <div class="flex justify-around">
-    <Info title="👻 FRENS In Bank">
+  <div class="flex justify-around gap-4 flex-col xs:flex-row">
+    <Info title="👻 Banked FRENS">
       {#if $info.price > 0}
         {numeral($info.frens).format('0,000')} FRENS
       {:else}
         Loading
       {/if}
     </Info>
-    <Info title="💰 GHST/FRENS Rate"
+    <Info title="💰 FRENS Price"
       >{numeral($info.kilofrensRate).format('0.00[0]a')} GHST = 1K FRENS</Info
     >
   </div>
