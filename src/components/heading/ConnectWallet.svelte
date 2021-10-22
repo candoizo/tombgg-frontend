@@ -5,14 +5,17 @@
   import { formatEther } from '@ethersproject/units';
   import { Web3Provider } from '@ethersproject/providers';
   import { contracts, multicallConfig } from '../../ts';
+  // import * as web3modal from '@gnosis.pm/safe-apps-web3modal';
+  // const { web3modal } = import('@gnosis.pm/safe-apps-web3modal');
   export let address;
   export let signer;
   export let balances;
   export let view;
 
   const connect = async () => {
-    console.log(`zomg connect wallet plz`);
+    console.log(`zomg connect wallet plzm`);
     const provider = await detectEthereumProvider();
+
     const enabledAccounts = await provider.enable();
     address = enabledAccounts[0];
     signer = new Web3Provider(provider).getSigner();

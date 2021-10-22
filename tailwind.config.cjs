@@ -12,6 +12,6 @@ module.exports = {
   },
   variants: {
     extend: {}
-  }
-  // plugins: [tailwindcssforms]
+  },
+  plugins: [require('tailwindcss-debug-screens')]
 };
